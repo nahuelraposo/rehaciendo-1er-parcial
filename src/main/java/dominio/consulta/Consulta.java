@@ -10,6 +10,7 @@ public abstract class Consulta {
 	Calendar periodoFinal = Calendar.getInstance();
 	Boolean accesible;
 	Calendar fechaSistema = Calendar.getInstance();
+	// SuscriptoresSystem suscriptoresSystem;
 	
 	@SuppressWarnings("deprecation")
 	public Consulta(String linkConsulta, Date periodoInicial,Date periodoFinal, boolean esAccesible) {
@@ -57,6 +58,35 @@ public abstract class Consulta {
 	/*
 	public void notificarASuscriptores(List <Suscriptor> suscriptores) {
 		
-	} */
+	} 
+	notificarSuscriptores( ){
+		this.suscriptoresSystem.encontrados( ).
+		filter(suscriptor -> !suscriptor.isDeleted( )).
+		forEach(suscriptor -> this.notificarSuscriptor(suscriptor));
+	}
+
+	notificarSuscriptor(SuscriptorDTO suscriptor){
+		if(suscriptor.enabledSystem()==1)
+			new EnviadorWhatsapp.enviar(suscriptor.getTelephone(), this.getLink());
+		else if(suscriptor.enabledSystem==0)
+			new MailSender().send(mailDelEmisor,sucriptor.getMail(), this.getLink());
+	} 
+	este metodo seria para el suscriptor 
+
+	
+	en esta parte lo que se tiene que hacer es algo al estilo observer, el patron
+	cuya función es notificar a una lista (en este caso a la interfaz Suscriptores
+	System, la cual ya posee como atributo una lista de suscriptores) de que
+	la consulta ya esta disponible para ser completada, y como nos dice que si bien
+	actualmente se notifica a traves de mail y del whatsapp, hay que tener en cuenta
+	de que en un futuro las plataformas se van a expandir, por ende habra que
+	contruir algun adapter que nos permita con un solo mensaje enviar la notificacion
+	a todas las plataformas disponibles.
+	
+	Para el adapter habria que hacer una interfaz que sea MedioDeComunicacion, y tanto
+	mailSender como EnviadorWhatsapp compartirian un metodo llamado notificar()
+	
+	
+	*/
 	
 }

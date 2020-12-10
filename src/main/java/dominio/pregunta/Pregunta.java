@@ -2,6 +2,8 @@ package dominio.pregunta;
 
 import java.util.List;
 
+import dominio.criterios.Criterio;
+
 public abstract class Pregunta {
 
 	TipoPregunta tipoPregunta;
@@ -9,10 +11,19 @@ public abstract class Pregunta {
 	List<String> respuestas;
 	Boolean respondida;
 	Boolean estaHabilitada;
+	Criterio criterio;
 	
 	public  boolean esObligatoria() {
-		return esObligatoria;
+		if(estaHabilitada) 
+			return getEsObligatoria();
+		else 
+			return false;
 	}
+	
+	public boolean getEsObligatoria( ){
+		return esObligatoria;
+		}
+
 	
 	public TipoPregunta tipoPregunta() {
 		return tipoPregunta;
@@ -38,7 +49,7 @@ public abstract class Pregunta {
 	}
 	
 	public void deshabilitar() {
-		this.estaHabilitada = false;
+		this.criterio.deshabilitar(this);
 	}
 	
 	public boolean estaHabilitada() {
@@ -48,4 +59,5 @@ public abstract class Pregunta {
 	public List<String> getRespuestas(){
 		return this.respuestas;
 	}
+	
 }

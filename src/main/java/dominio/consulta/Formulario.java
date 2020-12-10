@@ -51,7 +51,7 @@ public class Formulario extends Consulta {
 
 	public void realizarProcesosDeRespuesta(String respuesta){
 		Pregunta preguntaTemporal = this.getPreguntas().get(0);
-		if((preguntaTemporal.esObligatoria() && preguntaTemporal.estaHabilitada()) || respuesta!=null) {
+		if(preguntaTemporal.esObligatoria() || respuesta!=null) {
 			preguntaTemporal.validarRespuesta(respuesta);
 			this.quitarPreguntaPendienteDeResponder(preguntaTemporal);;
 			this.agregarPreguntaARespondida(preguntaTemporal);}
