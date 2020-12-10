@@ -9,7 +9,7 @@ public abstract class Consulta {
 	Calendar periodoInicial = Calendar.getInstance();
 	Calendar periodoFinal = Calendar.getInstance();
 	Boolean accesible;
-	Calendar fechaSistema = Calendar.getInstance();
+	Calendar fechaSistema = Calendar.getInstance(); // cambiar
 	// SuscriptoresSystem suscriptoresSystem;
 	
 	@SuppressWarnings("deprecation")
@@ -29,7 +29,7 @@ public abstract class Consulta {
 			this.accesible = true;
 			this.accesible = false;
 		return accesible;
-	}
+	}//reveer
 	
 	public String getLink() {
 		return this.linkConsulta;
@@ -56,12 +56,9 @@ public abstract class Consulta {
 	}
 	
 	/*
-	public void notificarASuscriptores(List <Suscriptor> suscriptores) {
-		
-	} 
+
 	notificarSuscriptores( ){
 		this.suscriptoresSystem.encontrados( ).
-		filter(suscriptor -> !suscriptor.isDeleted( )).
 		forEach(suscriptor -> this.notificarSuscriptor(suscriptor));
 	}
 
@@ -86,6 +83,30 @@ public abstract class Consulta {
 	Para el adapter habria que hacer una interfaz que sea MedioDeComunicacion, y tanto
 	mailSender como EnviadorWhatsapp compartirian un metodo llamado notificar()
 	
+	notificarSuscriptor(SuscriptorDTO suscriptor){
+			enabledSystem().notificar(suscriptor, this.getLink());
+	} 
+	
+	interface MedioDeComunicacion{
+	
+		
+	
+	 	public void notificar(SuscriptorDTO suscriptor, String contenido){
+	 	}
+	}
+	
+	public class EnviadorWhatsapp implements MedioDeComunicacion{
+		
+		public void notificar(SuscriptorDTO suscriptor, String link){
+			this.enviar(suscriptor.getTelephone(),link)
+		
+		}
+	}
+	
+	public class MailSender implements MedioDeComunicacion{
+		
+	
+	}
 	
 	*/
 	

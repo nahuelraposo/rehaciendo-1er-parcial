@@ -36,7 +36,7 @@ public class Multivaluada extends Pregunta {
 	public boolean matchea(String respuesta) {
 		return this.getOpciones().stream().map(opcion -> opcion.descripcion).
 								collect(Collectors.toList()).contains(respuesta);
-	}
+	} // implementar buscar opcion
 	
 	public List<Opcion> getOpciones(){
 		return opciones;

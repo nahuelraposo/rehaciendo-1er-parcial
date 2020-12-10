@@ -53,7 +53,7 @@ public abstract class Pregunta {
 	}
 	
 	public boolean estaHabilitada() {
-		return this.estaHabilitada;
+		return this.criterio.estaHabilitada();
 	}
 	
 	public List<String> getRespuestas(){
