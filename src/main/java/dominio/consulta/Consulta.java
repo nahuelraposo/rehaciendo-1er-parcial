@@ -2,22 +2,19 @@ package dominio.consulta;
 import java.util.Calendar;
 import java.util.Date;
 
-import dominio.pregunta.Pregunta;
-
 public abstract class Consulta {
 	String linkConsulta;
 	Calendar periodoInicial = Calendar.getInstance();
 	Calendar periodoFinal = Calendar.getInstance();
-	Boolean accesible;
-	Calendar fechaSistema = Calendar.getInstance(); // cambiar
+	Boolean fueNotificada;
 	// SuscriptoresSystem suscriptoresSystem;
 	
 	@SuppressWarnings("deprecation")
-	public Consulta(String linkConsulta, Date periodoInicial,Date periodoFinal, boolean esAccesible) {
+	public Consulta(String linkConsulta, Date periodoInicial,Date periodoFinal) {
 		this.linkConsulta = linkConsulta;
 		this.periodoInicial.set(periodoInicial.getYear(), periodoInicial.getMonth(), periodoInicial.getDay());
 		this.periodoFinal.set(periodoFinal.getYear(), periodoFinal.getMonth(), periodoFinal.getDay());
-		this.accesible = esAccesible;
+		this.fueNotificada = false;
 	}
 	
 	public boolean validarLink(String url) {
@@ -25,11 +22,18 @@ public abstract class Consulta {
 	}
 	
 	public boolean esAccesible() {
-		if(this.compararFechas(periodoInicial,periodoFinal, fechaSistema))
-			this.accesible = true;
-			this.accesible = false;
-		return accesible;
-	}//reveer
+		return this.compararFechas(periodoInicial,periodoFinal);
+	}
+	
+	public void chequearAccesibilidadParaNotificarConsulta() {
+		if(this.esAccesible() && !this.haSidoNotificada()) {
+			//this.notificarSucriptores();
+		}
+	}
+	
+	public boolean haSidoNotificada() {
+		return fueNotificada;
+	}
 	
 	public String getLink() {
 		return this.linkConsulta;
@@ -37,19 +41,8 @@ public abstract class Consulta {
 	
 	public void responder(String respuesta) {}
 	
-	public void deshabilitarHastaFecha(Pregunta pregunta, Date fechaLimite) {
-		pregunta.deshabilitar();
-	}
-	
-	public void deshabilitarVoluntariamente(Pregunta pregunta) {
-		pregunta.deshabilitar();
-	}
-	
-	public void deshabilitarPorLimite(Pregunta pregunta) {
-		pregunta.deshabilitar();
-	}
-	
-	public boolean compararFechas(Calendar fechaInicial, Calendar fechaFinal, Calendar fechaSistema) {
+	public boolean compararFechas(Calendar fechaInicial, Calendar fechaFinal) {
+		Calendar fechaSistema = Calendar.getInstance();
 		if(fechaInicial.compareTo(fechaSistema)<=0 && fechaFinal.compareTo(fechaSistema)>=0)
 			return true;
 			return false;
@@ -57,18 +50,11 @@ public abstract class Consulta {
 	
 	/*
 
-	notificarSuscriptores( ){
-		this.suscriptoresSystem.encontrados( ).
-		forEach(suscriptor -> this.notificarSuscriptor(suscriptor));
+	public void notificarSuscriptores(){
+			this.suscriptoresSystem.todos().
+			forEach(suscriptor -> suscriptor.medioComunicacion.notificar(suscriptor,this.getLink));
+			this.fueNotifacada = true;
 	}
-
-	notificarSuscriptor(SuscriptorDTO suscriptor){
-		if(suscriptor.enabledSystem()==1)
-			new EnviadorWhatsapp.enviar(suscriptor.getTelephone(), this.getLink());
-		else if(suscriptor.enabledSystem==0)
-			new MailSender().send(mailDelEmisor,sucriptor.getMail(), this.getLink());
-	} 
-	este metodo seria para el suscriptor 
 
 	
 	en esta parte lo que se tiene que hacer es algo al estilo observer, el patron
@@ -83,13 +69,25 @@ public abstract class Consulta {
 	Para el adapter habria que hacer una interfaz que sea MedioDeComunicacion, y tanto
 	mailSender como EnviadorWhatsapp compartirian un metodo llamado notificar()
 	
-	notificarSuscriptor(SuscriptorDTO suscriptor){
-			enabledSystem().notificar(suscriptor, this.getLink());
-	} 
+	class MisSuscriptoresSistema{
+	
+		List<SuscriptorDTO> suscriptoresSystem;
+		
+		public List<SuscriptorDTO> todos(){
+			return suscriptoresSystem.stream().map(s -> crearSuscriptor(s))
+		}
+		
+		public SuscriptorDTO crearSuscriptor(suscriptorDTO){
+			if(suscriptorDTO.enabledSystem = 1)
+					MedioDeComunicacion medioComunicacion = new EnviadorWhatsapp();
+			else 
+				if(suscriptorDTO.enabledSystem = 0)
+					MedioDeComunicacion medioComunicacion = new MailSender();
+			return new SuscriptorDTO(medioComunicacion, suscriptorDTO.mail(), suscriptorDTO.telephone());
+		}
+	}
 	
 	interface MedioDeComunicacion{
-	
-		
 	
 	 	public void notificar(SuscriptorDTO suscriptor, String contenido){
 	 	}
@@ -98,13 +96,23 @@ public abstract class Consulta {
 	public class EnviadorWhatsapp implements MedioDeComunicacion{
 		
 		public void notificar(SuscriptorDTO suscriptor, String link){
-			this.enviar(suscriptor.getTelephone(),link)
+			this.enviar(suscriptor.telephone(),link)
 		
 		}
 	}
 	
 	public class MailSender implements MedioDeComunicacion{
 		
+		String mailOficial;
+		
+		public void notificar(SuscriptorDTO suscriptor, String link){
+			this.send(this.getMailOficial(),suscriptor.mail(),link)
+		
+		} // aca hay que ver porque devuelve 0 si no se envio y 1 si se envio
+		
+		public String getMailOficial(){
+			return mailOficial;
+		}
 	
 	}
 	

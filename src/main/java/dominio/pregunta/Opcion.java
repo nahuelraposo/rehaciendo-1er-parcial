@@ -16,4 +16,8 @@ public class Opcion {
 	public int devolverContador() {
 		return contador;
 	}
+	
+	public boolean matcheaConRespuesta(String respuesta) {
+		return this.getDescripcion()==respuesta;
+	}
 }

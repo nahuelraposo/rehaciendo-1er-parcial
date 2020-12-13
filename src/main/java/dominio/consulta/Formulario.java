@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import dominio.pregunta.*;
+import dominio.validaciones.ErrorDeHabilitacion;
 import dominio.validaciones.ErrorFormularioVacio;
 import dominio.validaciones.ErrorValidacionFormulario;
 
@@ -12,15 +13,13 @@ public class Formulario extends Consulta {
 	List<Pregunta> preguntas;
 	List<Pregunta> preguntasRespondidas;
 
-	public Formulario(String linkConsulta, Date periodoInicial, Date periodoFinal, boolean esAccesible,
-			List<Pregunta> preguntas) {
-		super(linkConsulta, periodoInicial, periodoFinal, esAccesible);
+	public Formulario(String linkConsulta, Date periodoInicial, Date periodoFinal,List<Pregunta> preguntas) {
+		super(linkConsulta, periodoInicial, periodoFinal);
 		this.preguntas = preguntas;
 	}
 
-	public Formulario crearFormulario(String linkConsulta, Date periodoInicial, Date periodoFinal, boolean accesible,
-			List<Pregunta> preguntas) {
-		return new Formulario(linkConsulta, periodoInicial, periodoFinal, accesible, preguntas);
+	public Formulario crearFormulario(String linkConsulta, Date periodoInicial, Date periodoFinal,List<Pregunta> preguntas) {
+		return new Formulario(linkConsulta, periodoInicial, periodoFinal, preguntas);
 	}
 
 	public void responder(String respuesta) {
@@ -31,7 +30,7 @@ public class Formulario extends Consulta {
 			this.validarPreguntasResueltas();
 		} else
 			throw new ErrorFormularioVacio();
-	}
+	}// no me gusta esto
 
 	public void validarPreguntasResueltas() {
 		if (!this.preguntasObligatoriasRespondidas() || !this.preguntasDentroDeOpciones())
@@ -51,14 +50,21 @@ public class Formulario extends Consulta {
 
 	public void realizarProcesosDeRespuesta(String respuesta){
 		Pregunta preguntaTemporal = this.getPreguntas().get(0);
-		if(preguntaTemporal.esObligatoria() || respuesta!=null) {
-			preguntaTemporal.validarRespuesta(respuesta);
-			this.quitarPreguntaPendienteDeResponder(preguntaTemporal);;
-			this.agregarPreguntaARespondida(preguntaTemporal);}
-		else
+		if(!preguntaTemporal.estaHabilitada()) {
 			this.quitarPreguntaPendienteDeResponder(preguntaTemporal);
-			this.agregarPreguntaARespondida(preguntaTemporal);
-	}// la cagada aca es que si la pregunta no es valida, no arranca mas, se estanca,
+			throw new ErrorDeHabilitacion();
+		}
+		else {
+			if(preguntaTemporal.esObligatoria() || respuesta!=null) {
+				preguntaTemporal.validarRespuesta(respuesta);
+				this.quitarPreguntaPendienteDeResponder(preguntaTemporal);;
+				this.agregarPreguntaARespondida(preguntaTemporal);}
+			else
+				this.quitarPreguntaPendienteDeResponder(preguntaTemporal);
+				this.agregarPreguntaARespondida(preguntaTemporal);
+			}
+		}//	ESTO NO ME GUSTA PERO NI EN PEDO, REVISARLO
+		// la cagada aca es que si la pregunta no es valida, no arranca mas, se estanca,
 		// tengo que pensar una solución o replantearme la implementación de resolución
 		// de preguntas, con mayor simplicidad
 

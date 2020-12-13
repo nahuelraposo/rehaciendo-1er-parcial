@@ -18,4 +18,8 @@ public class RepositorioConsultas {
 	public void agregarConsulta(Consulta consulta) {
 		consultas.add(consulta);
 	}
+	
+	public void notificarASuscriptores() {
+		this.getConsultas().stream().forEach(consulta -> consulta.chequearAccesibilidadParaNotificarConsulta());
+	} // esto se tendría que programar para que se haga cada ciertos lapsos de tiempo
 }

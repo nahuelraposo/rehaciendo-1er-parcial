@@ -10,11 +10,10 @@ public abstract class Pregunta {
 	Boolean esObligatoria;
 	List<String> respuestas;
 	Boolean respondida;
-	Boolean estaHabilitada;
 	Criterio criterio;
 	
 	public  boolean esObligatoria() {
-		if(estaHabilitada) 
+		if(this.estaHabilitada()) 
 			return getEsObligatoria();
 		else 
 			return false;
@@ -44,16 +43,8 @@ public abstract class Pregunta {
 		return respondida;
 	}
 	
-	public void habilitar() {
-		this.estaHabilitada = true;
-	}
-	
-	public void deshabilitar() {
-		this.criterio.deshabilitar(this);
-	}
-	
 	public boolean estaHabilitada() {
-		return this.criterio.estaHabilitada();
+		return this.criterio.estaHabilitada(this);
 	}
 	
 	public List<String> getRespuestas(){
